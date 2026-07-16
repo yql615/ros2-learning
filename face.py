@@ -1,4 +1,4 @@
-# ====== 封装示例 ======
+# ======= 封装示例 =======
 class BankAccount:
     def __init__(self, initial: float):
         self.__balance = initial      # 🔒 双下划线 = 私有
