@@ -109,3 +109,25 @@ $ colcon build
 4. 设置环境变量
 $ source install/local_setup.sh
 $ echo "source ~/dev_ws/install/local_setup.sh">>~/.bashrc
++++
+
+## 2.功能包(package)
+### （1） 创建一个功能包
+
+* C++ : ros2 pkg create --build-type ament_cmake + 名称
+eg : ros2 pkg create --build-type ament_cmake learning_pkg_c
+
+* python : ros2 pkg create --build-type ament_python + 名称
+  eg : ros2 pkg create --build-type ament_python learning_pkg_python
+
+  ==注：
+  pkg : package
+  create --build-type 后面加类型 ：ament_amake(cpp),  ament_python(py)==
++++
+# 五、节点：机器人的工作细胞
+
+* 执行具体任务的进程
+* 独立运行的可执行文件
+* 可使用不同的编程语言
+* 可分布式运行在不同主机
+* 通过节点名称进行管理
