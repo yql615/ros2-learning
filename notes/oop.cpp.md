@@ -22,10 +22,10 @@
   ```
   
     · 类名：student
-    · 类里面有两个内容，年龄名字，叫做类的成员数据，或者叫做属性，类比int a =10, 10就是a的属性 
+    · 类里面有两个内容，年龄和名字，叫做类的成员数据，或者叫做属性，类比int a =10, 10就是a的属性 
 +++
 
-## 3.共有和私有
+## 3.公有和私有
 
 * **在类的定义里，形式如：**
   
@@ -39,7 +39,7 @@
     }
   ```
   
-* name 共有
+* name 公有
  · 类的外部（主函数里或者其他类）可以读写name的值
 * age 私有
  · 类的外部外面看不到
@@ -130,7 +130,7 @@
 	  	name=b;
 	  }
 	  
-	  //下面主函数***
+	  //下面主函数
 	  student aa;   //新建一个student类的对象aa,自动给aa的属性填默认值
 	  student bb(25,"李四")；  //构造函数重载，新建一个student类的的对象bb,同时动态输入名字和年龄
 	
@@ -235,7 +235,7 @@
   class student  //类定义，没写全，为了突出重点忽略了构造函数和属性
     {
     public:  //共有部分
-        void ptint_name();  //这个print名字是共有的方法
+        void ptint_name();  //这个print名字是公有的方法
     private:  //私有部分
         void ptint_age();  //这个prin年龄是私有的方法
     }
@@ -259,21 +259,21 @@
   
 * 既然私有方法不能被使用，那还有什么意义？
 · 可以用，有条件
-· 核心思想：==通过共有方法的外壳调用私有方法==
+· 核心思想：==通过公有方法的外壳调用私有方法==
 · 修改后的例子
 
 ```
 class student  //类定义，没写全，为了突出重点忽略了构造函数
 {
 pubilc:
-	void print_age_pubilc();  //这个print_age_public是共有的方法，外面可以看到
+	void print_age_pubilc();  //这个print_age_public是公有的方法，外面可以看到
 private:
 	void print_age_private();  //这个print_age_private是私有的方法，外面看不到
 }
 
-void student :: print_age_pubilc()  //定义print_age_pubilc共有方法
+void student :: print_age_pubilc()  //定义公有方法print_age_pubilc
 {
-	print_age_private();  //==注意：这里通过共有方法的外壳调用私有方法==
+	print_age_private();  //==注意：这里通过公有方法的外壳调用私有方法==
 }
 
 void student :: print_age_private()  //定义print_age_private私有方法
@@ -283,7 +283,7 @@ void student :: print_age_private()  //定义print_age_private私有方法
 
 //以下是主函数
 student aa;  //创建对象aa（ps: 省略了构造函数）
-aa.print_age_pubilc();  //这里通过共有方法的外壳，调用私有，然后打印出20
+aa.print_age_pubilc();  //这里通过公有方法的外壳，调用私有，然后打印出20
 aa.print_age_private();  //这里出错，不允许直接调用私有方法
 
 ```
@@ -331,11 +331,179 @@ private:
 * 派生出本科生的写法：
 
   ```
-  class undergraduate : public student   //本科生类定义，冒号后面表示从student类共有派生而来
+  class undergraduate : public student   //本科生类定义，冒号后面表示从student类公有派生而来
   {
   public:
   	string course;  //这行新增定义了一个公共的字符串属性course，比如本科生的大学物理课程
   }
   ```
 
+* 派生出研究生的写法
+
+```
+class postgraduate : public student  //研究生类定义，冒号后面表示从student类公有派生而来
+{
+pubilc:
+	string research;  //这行新增定义了一个和本科生不一样的字符串属性research，比如研究的方向：芯片设计
+}
+
+//下面是主函数
+postgraduate bb;  //创建研究生对象，此时子类无构造函数，系统将调用父类student无参数的构造函数给name和age赋一默认值，其默认值为“张三”，age = 20
+bb.set (25);  //postgraduate本身没有set方法，这里调用父类student的方法，对age赋值
+```
+
+* 对比研究生和本科生两个类：
+· 都没写两个基本属性name和age，因为根本不用写，==子类自动继承父类的属性和方法==
+· 除了公有的name和age，也有不同的东西，这是非常重要的类的派生特性，除了继承而来，还能有自己的属性和方法
+
+### (2)类在不同情况下的继承（公有/私有/保护 继承）
+
+* public, private, protect（保护）
+· 他们三个是平级的
+· 在没有派生继承的情况下，protect 和 private 的效果完全一样
+
+* 研究生类定义：
+· class postgraduate : pubilc student {···}
+· 其中public表示公有继承，只继承student的公有部分（age和name），并且age和name也将作为研究生类的public部分
+· 研究生类无法继承也无法访问student类的私有部分
+* 将父类student类定义的private替换为protect
+
+​       · 对student本身无任何变化
+​       · 当class postgraduate : public student {···}时候，除了public被继承了，protect（私有）也被研究生继承了
+​       · student的protect内容被继承到了postgraduate的protect中
+
+* 公有继承：
+· 父类student， public内容A, private内容B， 子类postgraduate公有继承，则只有public内容A
+· 父类student， public内容A, protect内容B， 子类postgraduate公有继承，则有public内容A + project内容B
+
+* 私有继承和保护继承
+· class postgraduate ：private student  /  class postgraduate ：protect student
+· 父类student， public内容A, private内容B，子类私有继承，则子类只有内容A，且为private
+· 父类student， public内容A, protect内容B，子类保护继承，则子类有内容A 和 B, 且均为protect
+· 在保密优先级上，private最为私密，protect其次，public最公开。private里面的内容无论如何都不能被继承
+
+### (3)子类的构造函数
+
+* 子类可以有自己的构造函数
+· 子类没有自己的构造函数，系统会调用父类student的构造函数
+· 无论子类有没有自己的构造函数，创建子类对象时，父类构造函数都将被调用
+* 研究生类不带参数构造
+
+```
+class postgraduate : public student  //研究生类定义，表示从student中派生而来
+{
+public:  //研究生的公有成员
+	string research;  //新增定义了一个公开的属性research，字符串，研究方向
+	postgraduate();  //无参数的构造函数申明
+	postgraduate(int a, string b, string c);  //带参数的构造函数申明，参数为年龄 姓名 研究方向 
+}
+
+postgraduate :: postgraduate();  //无参数的构造函数定义
+{
+	research = "asic design";  //对研究生的research属性赋值为asic design,==注意没有age和name==
+}
+
+//下面是主函数
+postgraduate bb;  //创建研究生对象bb，调用无参数构造函数
+
+```
+
+· 创建子类bb对象时，系统首先自动运行父类student构造函数，对age和name赋值，随后运行子类postgraduate构造函数，对bb对象进行拓展，增加research内容
+· 子类是不能继承父类的构造函数的，只能调用父类构造函数
+
+* 研究生类带参数构造
+
+```cpp
+class postgraduate : public student  //研究生类定义，表示从student中派生而来
+{
+public:  //研究生的公有成员
+	string research;  //新增定义了一个公开的属性research，字符串，研究方向
+	postgraduate();  //无参数的构造函数申明
+	postgraduate(int a, string b, string c);  //带参数的构造函数申明，参数为年龄 姓名 研究方向 
+}
+
+postgraduate :: postgraduate(int a, string b, string c) : student(a, b) //带参数的构造函数定义
+{
+	research = c;
+}
+
+//下面是主函数
+postgraduate bb( 25, "李四" , "ASIC design");  //创建研究生对象bb，传入有参数的构造函数
+
+```
+
+· 程序会先调用父类student构造函数，把25和李四两个值传入父类student带参数的构造函数
+· 随后把参数 c = ASIC design 传入bb自己的research属性
+==注意：==定义和申明与无参数构造有所不同
+
+## 3.多态
+
+### (1)什么是多态
+
+* 举个小例子
+  我们都知道：
+  int a = 1; int b = 2; 则我们可以得到 a+b=3；
+  => 加法专属于整数类的，如果是 string a; string b; 显然是不能用加法的（char a + char b 可以） 
+  （方法真的是专属于某一个类吗？）
+
+  ==But！！！==
+  在比较新的编程语言中，如 python/ruby，两个字符串是可以相加的，
+  eg:
   
+  ```
+    a = "xxxx";        #这是python无需定义数据类型
+    b = "yyyyy";
+    print (a+b);         #会打印出xxxxyyyyy
+  ```
+  
+ * 这就是面向对象编程中的“多态”
+   
+   
+   · 不太严谨的说法是：不同类的对象可以用相同的方法，即有相同的方法名字，但方法里面的内容具体干了什么，是不一样的（eg: 当 a  和 b 是数字时，符号“+”， 执行传统意义上的加法； 当 a 和 b 是字符串时，符号“+”， 执行字符串的拼接， 系统会根据当前情况智能选择  采用哪种方法） => ==在python等新兴语言中是正确的==
+   
+  
+   · 而在==C++==中，如果要实现相同函数名执行不同的内容，有3种方法：
+   
+   1. 重载
+     ~ python a+b 这个例子中，C++中看上去更接近重载
+     ~ 重载两个函数参数格式必须是不一样的（编译器可以识别出来）
+     ~ 不依赖与面向编程，依赖编译器
+   
+     ```cpp
+     class student
+     {
+     public:
+      int age;
+      string name;
+      bool set (int a); //两个函数名一样，但输入格式不一样
+      bool set (string a); //这个函数定略过，name = a; return true;
+     }
+     ```
+   
+     
+   2. 隐藏
+   ~ 在父类student和子类postgraduate中都定义一个函数study(),输入参考格式相同不同都可以
+   
+   ```cpp
+   class student  //类定义，没写全，为了突出重点忽略了构造函数和属性
+   {
+   public:
+   		void study (bool a)  {cout<<"好好学习"};
+   }
+   
+   class postgraduate : public student   //类定义，没写全，为了突出重点忽略了构造函数和属性
+   {
+   pubic:
+   		void study (int b)  {cout<<"芯片设计"}; 
+   }
+   
+   //下面是主函数
+   postgraduate bb;  //子类对象
+   student aa;   //父类对象
+   bb. study( 2 );   //研究生对象调用研究生的study方法，参数为int，打印出芯片设技
+   aa. study( true );  //学生对象调用学生的study方法，参数为bool，打印出好好学习
+   bb. study( true );  //这行出错，研究生对象，但参数为bool，本来应该重载父类的study方法，因为这时父类方法被隐藏了，系统找不到对应的方法，这是隐藏和重载的区别
+   
+   ```
+   
+   
