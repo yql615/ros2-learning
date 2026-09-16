@@ -265,7 +265,7 @@
 ```
 class student  //类定义，没写全，为了突出重点忽略了构造函数
 {
-pubilc:
+public:
 	void print_age_pubilc();  //这个print_age_public是公有的方法，外面可以看到
 private:
 	void print_age_private();  //这个print_age_private是私有的方法，外面看不到
