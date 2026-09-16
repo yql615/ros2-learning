@@ -343,7 +343,7 @@ private:
 ```
 class postgraduate : public student  //研究生类定义，冒号后面表示从student类公有派生而来
 {
-pubilc:
+public:
 	string research;  //这行新增定义了一个和本科生不一样的字符串属性research，比如研究的方向：芯片设计
 }
 
